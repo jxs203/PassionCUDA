@@ -1,0 +1,39 @@
+!
+!     This file contains the gljcuda kernel to write the forces, and append the potential energy
+!     to the global device memory.
+!     Using the thread and threadblock ids it can work out the pairwise calculation the thread
+!     should be calculating.
+!
+! Main routine
+!
+module gljcuda
+  implicit none
+
+contains
+  !
+  !  Array negation kernel (basic single-block version) for part 2B
+  !
+  attributes(global) subroutine g_negate(size_aa, aa)
+    implicit none
+
+    integer, value, intent(in)                 :: size_aa
+    integer, dimension(size_aa), intent(inout) :: aa
+
+
+
+  end subroutine g_negate
+
+  !
+  ! Multi-block version of kernel for part 2C
+  !
+  attributes(global) subroutine g_negate_multiblock(size_aa, aa)
+    implicit none
+
+    integer, value, intent(in)                 :: size_aa
+    integer, dimension(size_aa), intent(inout) :: aa
+
+
+
+  end subroutine g_negate_multiblock
+
+end module gljcuda
