@@ -1,0 +1,33 @@
+attributes(global) subroutine printme(devmem)
+  implicit none
+  integer, device :: devmem
+  devmem = 5
+  print*, "got here"
+end subroutine printme
+
+
+program main
+  use cudafor
+  implicit none
+  integer :: istat
+  integer :: deviceNum, thismem, version
+
+  integer, device :: devmem
+  type (cudaDeviceProp) :: prop
+  
+  ! getting card information
+  istat = cudaGetDevice(deviceNum)
+  istat = cudaGetDeviceProperties(prop, deviceNum)
+  istat = cudaDriverGetVersion(version)
+  write(*,"('   Device name: ',a)") trim(prop%name)
+  write(*,*) "Driver Version:", version, istat
+  thismem = 25
+  devmem = thismem
+  call printme<<<1,256>>>(devmem)
+  istat = cudaThreadSynchronize()
+   thismem=devmem
+  print*, thismem
+
+end program main
+
+
