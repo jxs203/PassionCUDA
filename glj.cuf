@@ -10,30 +10,29 @@ module gljcuda
   implicit none
 
 contains
-  !
-  !  Array negation kernel (basic single-block version) for part 2B
-  !
-  attributes(global) subroutine g_negate(size_aa, aa)
+  !This is !NOT! a real subroutine, but a list of things that will need to go into the main kernel that will call the potential
+  !and move functions.
+  attributes(global) subroutine manager(tid_d)!,NPART)
+    integer :: tid_d
+    integer :: ThreadBlockPerParticle
+    integer :: NPART
+    NPART = 200
+    ThreadBlockPerParticle = CEILING(REAL(NPART)/REAL(blockDim%x)) ! rounded up number of thread blocks per particle. eg 65/32 = 2.02... -> 3.
+    write(*,*) "threadidx%x",threadidx%x
+    !write(*,*) "blockDim%x", blockDim%x
+    write(*,*) "hello world"
+    tid_d = ThreadBlockPerParticle
+    ! This is worked out here because it will be constant for the entire simulation. It should be worked out outside the main loop.
+
+  end subroutine manager
+
+! attributes device because it can only be called from another device kernel (as opposed to global)
+  attributes(device) subroutine glj(ThreadBlockPerParticle)
     implicit none
+    !integer, value, intent(in)                 :: size_aa ! We can pass by value rather than by reference using the value keyword
+    !integer, dimension(size_aa), intent(inout) :: aa
 
-    integer, value, intent(in)                 :: size_aa
-    integer, dimension(size_aa), intent(inout) :: aa
-
-
-
-  end subroutine g_negate
-
-  !
-  ! Multi-block version of kernel for part 2C
-  !
-  attributes(global) subroutine g_negate_multiblock(size_aa, aa)
-    implicit none
-
-    integer, value, intent(in)                 :: size_aa
-    integer, dimension(size_aa), intent(inout) :: aa
-
-
-
-  end subroutine g_negate_multiblock
-
+    integer, intent(in) :: ThreadBlockPerParticle ! The number of threads each particle will need. TODO make const
+    print*, ThreadBlockPerParticle
+  end subroutine glj
 end module gljcuda

@@ -1,0 +1,15 @@
+program main
+    use cudafor
+    use gljcuda
+    integer, device :: tid_d!, npart_d
+    integer:: tid 
+    integer, parameter :: npart = 5
+    npart_d = 5
+    print*, "calling manager"
+    call manager<<<1, 20>>>(tid_d)
+    print*, "called manager"
+    print*, "getting value of tid_d to tid"
+    tid=tid_d 
+    print*, "tid", tid
+    !call flush()
+end program main
